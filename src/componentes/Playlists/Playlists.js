@@ -1,4 +1,5 @@
-import React, {  useState } from "react";
+import axios from "axios";
+import React, {  useEffect, useState } from "react";
 import Musicas from "../Musicas/Musicas";
 
 const playlistsLocal = [
@@ -21,7 +22,22 @@ const playlistsLocal = [
 ]
 function Playlists() {
     const [playlists, setPlaylists] = useState(playlistsLocal)
-  
+
+    const input = {
+        headers: {
+            Authorization: 'guilherme-mesquita-ammal'
+        }
+    }
+
+    axios.get('https://us-central1-labenu-apis.cloudfunctions.net/labefy/playlists', input)
+    .then((response)=>{
+        console.log(response.data)
+        setPlaylists(response.data.result.list)
+    })
+
+
+
+
     return (
         <div>
             {playlists.map((playlist) => {

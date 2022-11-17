@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
 import { Botao, ContainerInputs, ContainerMusicas, InputMusica, Musica } from './styled'
 
 const musicasLocal = [{
@@ -21,6 +22,42 @@ const musicasLocal = [{
 }]
 
 export default function Musicas(props) {
+
+    const getMusics = () => {
+        const input = {
+            headers: {
+                Authorization: 'guilherme-mesquita-ammal'
+            }
+        }
+
+        axios.get(`https://us-central1-labenu-apis.cloudfunctions.net/labefy/playlists/${props.playlist.id}/tracks`, input)
+        .then((response)=>{
+            setMusicas(response.data.result.tracks)
+        })
+        .catch((error)=>{
+            console.log(error)
+        })
+    }
+
+    getMusics()
+
+    const removeTrack = (id) => {
+        const input = {
+            headers: {
+                Authorization: 'guilherme-mesquita-ammal'
+            }
+        }
+
+        axios.delete(`https://us-central1-labenu-apis.cloudfunctions.net/labefy/playlists/${props.playlist.id}/tracks/${id}`, input)
+        .then((response)=>{
+            setMusicas(response.data.result.tracks)
+        })
+        .catch((error)=>{
+            console.log(error)
+        })
+    }
+
+
     const [musicas, setMusicas] = useState(musicasLocal)
 
     return (
@@ -31,7 +68,7 @@ export default function Musicas(props) {
                     <Musica key={musica.id}>
                         <h3>{musica.name} - {musica.artist}</h3>
                         <audio src={musica.url} controls />
-                        <button>X</button>
+                        <button onClick={() => removeTrack(musica.id)}>X</button>
                     </Musica>)
             })}
             <ContainerInputs>
