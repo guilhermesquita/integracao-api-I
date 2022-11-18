@@ -23,6 +23,22 @@ const musicasLocal = [{
 
 export default function Musicas(props) {
 
+    const [art, setArt] = useState('')
+    const [url, setUrl] = useState('')
+    const [name, setName] = useState('')
+
+    const handleName = (e) => {
+        setName(e.target.value)
+    }
+
+    const handleUrl = (e)=>{
+        setUrl(e.target.value)
+    }
+
+    const handleArt = (e)=>{
+        setArt(e.target.value)
+    }
+
     const getMusics = () => {
         const input = {
             headers: {
@@ -57,6 +73,27 @@ export default function Musicas(props) {
         })
     }
 
+    const addTrack = () => {
+        const input = {
+            headers: {
+                Authorization: 'guilherme-mesquita-ammal'
+            }
+        }
+
+        const body = {
+            name: name,
+            artist: art,
+            url: url
+        }
+
+        axios.post(`https://us-central1-labenu-apis.cloudfunctions.net/labefy/playlists/${props.playlist.id}/tracks`, body, input)
+        .then((res) => {
+            console.log(res)
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+    }
 
     const [musicas, setMusicas] = useState(musicasLocal)
 
@@ -72,10 +109,10 @@ export default function Musicas(props) {
                     </Musica>)
             })}
             <ContainerInputs>
-                <InputMusica placeholder="artista" />
-                <InputMusica placeholder="musica" />
-                <InputMusica placeholder="url" />
-                <Botao>Adicionar musica</Botao>
+                <InputMusica placeholder="artista" value={art} onChange={handleArt}/>
+                <InputMusica placeholder="musica" value={name} onChange={handleName}/>
+                <InputMusica placeholder="url" value={url} onChange={handleUrl}/>
+                <Botao onClick={addTrack}>Adicionar musica</Botao>
             </ContainerInputs>
         </ContainerMusicas>
     )
