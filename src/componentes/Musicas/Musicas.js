@@ -39,41 +39,47 @@ export default function Musicas(props) {
         setArt(e.target.value)
     }
 
-    const getMusics = () => {
+    useEffect(() => {
+        getMusics();
+      }, []);
+
+    const getMusics = async() => {
+        const input = {
+            headers: {
+                Authorization: 'guilherme-mesquita-ammal'
+            }
+        }
+        
+        try{
+            const response = await axios.get(`https://us-central1-labenu-apis.cloudfunctions.net/labefy/playlists/${props.playlist.id}/tracks`, input)
+
+            setMusicas(response.data.result.tracks)
+        } 
+        catch(error){
+            console.log(error)
+        }
+    }
+
+
+    const removeTrack = async (id) => {
         const input = {
             headers: {
                 Authorization: 'guilherme-mesquita-ammal'
             }
         }
 
-        axios.get(`https://us-central1-labenu-apis.cloudfunctions.net/labefy/playlists/${props.playlist.id}/tracks`, input)
-        .then((response)=>{
+
+        try{
+            const response = await axios.delete(`https://us-central1-labenu-apis.cloudfunctions.net/labefy/playlists/${props.playlist.id}/tracks/${id}`, input)
+
             setMusicas(response.data.result.tracks)
-        })
-        .catch((error)=>{
-            console.log(error)
-        })
-    }
-
-    getMusics()
-
-    const removeTrack = (id) => {
-        const input = {
-            headers: {
-                Authorization: 'guilherme-mesquita-ammal'
-            }
         }
-
-        axios.delete(`https://us-central1-labenu-apis.cloudfunctions.net/labefy/playlists/${props.playlist.id}/tracks/${id}`, input)
-        .then((response)=>{
-            setMusicas(response.data.result.tracks)
-        })
-        .catch((error)=>{
+        catch(error){
             console.log(error)
-        })
+        }
     }
 
-    const addTrack = () => {
+    const addTrack = async() => {
         const input = {
             headers: {
                 Authorization: 'guilherme-mesquita-ammal'
@@ -86,13 +92,13 @@ export default function Musicas(props) {
             url: url
         }
 
-        axios.post(`https://us-central1-labenu-apis.cloudfunctions.net/labefy/playlists/${props.playlist.id}/tracks`, body, input)
-        .then((res) => {
-            console.log(res)
-        })
-        .catch((err)=>{
+        try{
+            const response = await axios.post(`https://us-central1-labenu-apis.cloudfunctions.net/labefy/playlists/${props.playlist.id}/tracks`, body, input)
+
+            console.log(response)
+        }catch(err){
             console.log(err)
-        })
+        }
     }
 
     const [musicas, setMusicas] = useState(musicasLocal)

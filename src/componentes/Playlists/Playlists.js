@@ -23,20 +23,27 @@ const playlistsLocal = [
 function Playlists() {
     const [playlists, setPlaylists] = useState(playlistsLocal)
 
-    const input = {
-        headers: {
-            Authorization: 'guilherme-mesquita-ammal'
+    useEffect(() => {
+        getPlaylist();
+      }, []);
+
+    const getPlaylist = async () => {
+        const input = {
+            headers: {
+                Authorization: 'guilherme-mesquita-ammal'
+            }
+        }
+        try{
+            const response = await axios.get('https://us-central1-labenu-apis.cloudfunctions.net/labefy/playlists', input)   
+
+            console.log(response.data)
+            setPlaylists(response.data.result.list)
+        }catch(err){
+            console.log(err)
         }
     }
 
-    axios.get('https://us-central1-labenu-apis.cloudfunctions.net/labefy/playlists', input)
-    .then((response)=>{
-        console.log(response.data)
-        setPlaylists(response.data.result.list)
-    })
-
-
-
+        
 
     return (
         <div>
